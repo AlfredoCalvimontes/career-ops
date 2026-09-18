@@ -169,6 +169,12 @@ function checkTrackedBakFiles(root) {
       cwd: root,
       encoding: 'utf-8',
       timeout: 5000,
+      // The catch below recognizes "not a git repository" by git's English
+      // message. Under a non-English system locale git localizes it (Spanish:
+      // "no es un repositorio git"), so the expected skip was reported as a
+      // failed check. Pin the child's locale; this changes only git's message
+      // language, never anything the user's own data or language settings drive.
+      env: { ...process.env, LC_ALL: 'C', LANGUAGE: 'C' },
       // stderr PIPED, not inherited. execFileSync's default hands the child our
       // own stderr, so outside a checkout git printed
       //   fatal: not a git repository (or any of the parent directories): .git
