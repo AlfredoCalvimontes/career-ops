@@ -15,6 +15,7 @@ All scripts live in the project root as `.mjs` modules. Most are exposed via
 | `npm run merge` | `merge-tracker.mjs` | Merge batch TSVs into applications.md |
 | `npm run pdf` | `generate-pdf.mjs` | Convert HTML to ATS-optimized PDF |
 | `npm run jd:similarity` | `jd-similarity.mjs` | Compare a new JD with a previous JD/CV and recommend reuse, edits, or regeneration |
+| `npm run cv:verify-layout -- <file.pdf>` | `verify-cv-layout.mjs` | Measure a generated PDF: orphaned heading, mid-page hole, page ending early, thin last page, text against the page edge (needs Poppler; `generate-pdf.mjs` runs it as an advisory). Exit 1 = problem, 2 = skipped |
 | `npm run img-to-pdf` | `img-to-pdf.mjs` | Convert a single screenshot/image into a single-page PDF |
 | `node build-cv-latex.mjs` | `build-cv-latex.mjs` | Build .tex from structured JSON payload |
 | `npm run sync-check` | `cv-sync-check.mjs` | Validate CV/profile consistency |
