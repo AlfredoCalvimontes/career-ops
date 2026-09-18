@@ -15,6 +15,8 @@ All scripts live in the project root as `.mjs` modules. Most are exposed via
 | `npm run merge` | `merge-tracker.mjs` | Merge batch TSVs into applications.md |
 | `npm run pdf` | `generate-pdf.mjs` | Convert HTML to ATS-optimized PDF |
 | `npm run jd:similarity` | `jd-similarity.mjs` | Compare a new JD with a previous JD/CV and recommend reuse, edits, or regeneration |
+| `npm run robots -- <url>` | `check-robots.mjs` | May a blocked fetch be retried with browser headers? Applies robots.txt (RFC 9309, longest match, Disallow wins ties; fails closed); exit 1 = do not retry. `CAREER_OPS_IGNORE_ROBOTS=1` overrides |
+| `npm run fetch:page -- <url>` | `fetch-page.mjs` | Fetch a page as text; on HTTP 403 retry with browser headers only when `check-robots` allows it |
 | `npm run img-to-pdf` | `img-to-pdf.mjs` | Convert a single screenshot/image into a single-page PDF |
 | `node build-cv-latex.mjs` | `build-cv-latex.mjs` | Build .tex from structured JSON payload |
 | `npm run sync-check` | `cv-sync-check.mjs` | Validate CV/profile consistency |
