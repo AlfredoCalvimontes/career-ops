@@ -512,6 +512,7 @@ export const USER_PATHS = [
   'plugins.lock',
   'opencode.json',
   '.claude/settings.json',
+  '.claude/mem_scope.txt',
   '.claude/hooks/',
 ];
 
