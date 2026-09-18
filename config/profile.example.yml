@@ -87,10 +87,20 @@ location:
   # explicitly states it will not sponsor, that is a hard blocker (see
   # modes/_profile.md "Your Location Policy"). Omit → treated as false.
   needs_sponsorship: false
+  # Broader regions you can work from without sponsorship (e.g. LATAM). A remote
+  # posting open to one of these regions is tagged `remote-latam` and passes the
+  # eligibility gate (check-gates.mjs). Optional.
+  # regions: ["LATAM"]
   # For remote roles outside your country:
   # onsite_availability: "1 week/month in any city"
 
 language:
+  # Languages you speak, used by the language gate (check-gates.mjs). Level is a
+  # CEFR letter (a1-c2) or `native`. A posting requiring a language not listed
+  # here FAILs the gate; a bar above your level is FLAGged. Optional.
+  # spoken:
+  #   - { lang: en, level: c1 }
+  #   - { lang: es, level: native }
   # Human-facing output language for reports, tracker notes, PDFs, cover
   # letters, outreach, and form answers. Use an ISO language code such as
   # `en` or `zh-CN`; `zh-CN` also enables Chinese PDF typography rules.
