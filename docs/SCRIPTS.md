@@ -19,6 +19,7 @@ All scripts live in the project root as `.mjs` modules. Most are exposed via
 | `npm run verify:host -- <url>` | `verify-host.mjs` | Classify a posting URL host as official ATS, known job board / configured portal, or unverified (look-alike, userinfo, punycode, raw-IP aware); exit 1 if unverified |
 | `npm run robots -- <url>` | `check-robots.mjs` | May a blocked fetch be retried with browser headers? Applies robots.txt (RFC 9309, longest match, Disallow wins ties; fails closed); exit 1 = do not retry. `CAREER_OPS_IGNORE_ROBOTS=1` overrides |
 | `npm run fetch:page -- <url>` | `fetch-page.mjs` | Fetch a page as text; on HTTP 403 retry with browser headers only when `check-robots` allows it |
+| `npm run cv:verify-layout -- <file.pdf>` | `verify-cv-layout.mjs` | Measure a generated PDF: orphaned heading, mid-page hole, page ending early, thin last page, text against the page edge (needs Poppler; `generate-pdf.mjs` runs it as an advisory). Exit 1 = problem, 2 = skipped |
 | `npm run img-to-pdf` | `img-to-pdf.mjs` | Convert a single screenshot/image into a single-page PDF |
 | `node build-cv-latex.mjs` | `build-cv-latex.mjs` | Build .tex from structured JSON payload |
 | `npm run sync-check` | `cv-sync-check.mjs` | Validate CV/profile consistency |

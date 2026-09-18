@@ -1781,6 +1781,19 @@ async function renderInPage(browser, html, outputPath, opts = {}) {
     console.log(`📊 Pages: ${pageCount}`);
     console.log(`📦 Size: ${(pdfBuffer.length / 1024).toFixed(1)} KB`);
 
+    // Advisory layout check (orphaned heading, mid-page hole, early page end,
+    // thin last page, edge text). Never fails the run and stays silent when
+    // Poppler is absent or the PDF cannot be measured; see verify-cv-layout.mjs.
+    try {
+      // Dynamic so a trimmed workspace copy without lib/ still renders.
+      const { analyzeLayout, extractPdfLines } = await import('./lib/pdf-layout.mjs');
+      const measured = extractPdfLines(outputPath);
+      if (measured.ok) {
+        const problems = analyzeLayout(measured.pages);
+        for (const p of problems) console.warn(`⚠️  Layout (page ${p.page}): ${p.type} — ${p.detail}`);
+      }
+    } catch { /* advisory only */ }
+
     try {
       updatePDFManifest(reportNum, outputPath, inputPath, format);
       console.log(`🔗 Manifest: data/pdf-index.tsv updated${reportNum ? ` (report ${reportNum})` : ' (no --report given)'}`);
