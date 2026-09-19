@@ -246,6 +246,7 @@ const SYSTEM_PATHS = [
   'lib/cv-payload-schema.mjs',
   'scan-hn.mjs',
   'scripts/check-syntax.mjs',
+  'scripts/security-guards.mjs',
   'scripts/export-ats-text.mjs',
   'scripts/followup-sweep.sh',
   'story-provenance-check.mjs',
