@@ -38,11 +38,13 @@ import { sanitizeMarkdownField } from './scan.mjs';
 import { withPipelineLock } from './pipeline-lock.mjs';
 import { isMainModule } from './lib/is-main-module.mjs';
 import { getCareerOpsRoot } from './path-resolver.mjs';
+import { getRank, keyFor, loadSeenJobs, setRank, touch, withSeenJobs } from './lib/seen-jobs.mjs';
 
 const CAREER_OPS = dirname(fileURLToPath(import.meta.url));
 const DATA_ROOT = getCareerOpsRoot();
 const PIPELINE_PATH = join(DATA_ROOT, 'data', 'pipeline.md');
 const CV_PATH = join(DATA_ROOT, 'cv.md');
+const SEEN_PATH = process.env.CAREER_OPS_SEEN_JOBS || join(DATA_ROOT, 'data', 'seen-jobs.json');
 
 const DEFAULT_LIMIT = 20;
 // A ceiling the flag cannot raise. The whole reason the core scan is zero-token is
@@ -259,21 +261,35 @@ async function main(args) {
   const model = flagValue(args, '--model');
   const forced = flagValue(args, '--cli') ?? process.env.CAREER_OPS_RANK_CLI;
 
-  const cli = forced
-    ? CLI_CANDIDATES.find(c => c.bin === forced) ?? { bin: forced, args: p => ['-p', p] }
-    : detectCli();
-  if (!cli) {
-    console.error('No supported agent CLI found (tried: %s).', CLI_CANDIDATES.map(c => c.bin).join(', '));
-    console.error('Install one, or pass --cli <name>. See the Headless / Batch Mode table in AGENTS.md.');
-    return 1;
-  }
-
   const pending = parsePendingEntries(readFileSync(PIPELINE_PATH, 'utf-8'));
   if (!pending.length) {
     console.log('No unranked pending entries. Nothing to do.');
     return 0;
   }
-  const selected = selectBatch(pending, limit);
+
+  // Rank state (data/seen-jobs.json): a posting ranked in an earlier run, whose row
+  // has since been re-added or lost its annotation, is annotated from the stored
+  // rank instead of being scored again. No CLI call, no tokens.
+  const { state: seen, recovered } = loadSeenJobs(SEEN_PATH);
+  if (recovered) console.error(`  rank state ${recovered}; starting empty`);
+  const cached = [];
+  const toRank = [];
+  for (const entry of pending) {
+    const stored = getRank(seen, keyFor(entry.url));
+    const segment = stored ? formatRankSegment(stored.score, stored.reason) : '';
+    if (segment) cached.push({ entry, segment });
+    else toRank.push(entry);
+  }
+  const selected = selectBatch(toRank, limit);
+
+  const cli = !selected.length ? null : forced
+    ? CLI_CANDIDATES.find(c => c.bin === forced) ?? { bin: forced, args: p => ['-p', p] }
+    : detectCli();
+  if (selected.length && !cli) {
+    console.error('No supported agent CLI found (tried: %s).', CLI_CANDIDATES.map(c => c.bin).join(', '));
+    console.error('Install one, or pass --cli <name>. See the Headless / Batch Mode table in AGENTS.md.');
+    return 1;
+  }
   const cvExcerpt = existsSync(CV_PATH) ? readFileSync(CV_PATH, 'utf-8').slice(0, 2000) : '';
 
   const started = Date.now();
@@ -281,7 +297,8 @@ async function main(args) {
   // uniqueness, and two byte-identical pending rows are scored as two separate
   // entries — keying by raw text would collapse them, discarding one score and
   // applying the other twice. Each annotation is consumed once, in file order.
-  const annotations = [];
+  const annotations = cached.map(c => ({ raw: c.entry.raw, segment: c.segment, used: false }));
+  const ranked = []; // { entry, score, reason } scored this run, for the rank state
   // Counts calls ATTEMPTED, not just ones that returned successfully — a call
   // that throws or times out still spends tokens, so it must still show up in
   // the final summary.
@@ -309,7 +326,10 @@ async function main(args) {
       const entry = batch[r.id];
       if (!entry) continue;
       const segment = formatRankSegment(r.score, r.reason);
-      if (segment) annotations.push({ raw: entry.raw, segment, used: false });
+      if (segment) {
+        annotations.push({ raw: entry.raw, segment, used: false });
+        ranked.push({ entry, score: r.score, reason: r.reason });
+      }
     }
   }
 
@@ -319,6 +339,19 @@ async function main(args) {
     for (const { raw, segment } of annotations) console.log(`${raw} | ${segment}`);
     console.log(`\n  [dry-run] would annotate ${annotations.length} of ${selected.length} selected entr(ies).`);
     return 0;
+  }
+
+  // Remember what was learned: every pending posting is recorded as seen, and each
+  // newly scored one keeps its rank, so the next run reuses it. Only ADDS knowledge;
+  // no pipeline row or tracker status is touched here.
+  try {
+    await withSeenJobs(SEEN_PATH, (state) => {
+      const now = new Date().toISOString();
+      for (const e of pending) touch(state, { url: e.url, company: e.company, title: e.title }, now);
+      for (const r of ranked) setRank(state, keyFor(r.entry.url), { score: r.score, reason: r.reason, cli: cli?.bin }, now);
+    });
+  } catch (err) {
+    console.error(`  rank state not saved (${err?.message || err}) — ranking itself is unaffected`);
   }
 
   let written = 0;
@@ -335,13 +368,15 @@ async function main(args) {
     });
   }
 
-  console.log(`\n  Ranked ${written} entr(ies) of ${pending.length} pending in ${attemptedCalls} CLI call(s) via ${cli.bin}.`);
+  console.log(`\n  Ranked ${written} entr(ies) of ${pending.length} pending in ${attemptedCalls} CLI call(s)${cli ? ` via ${cli.bin}` : ''}.`);
+  if (cached.length) console.log(`  ${cached.length} entr(ies) reused a stored rank from data/seen-jobs.json (no scoring call).`);
   if (skippedBatches) console.log(`  ${skippedBatches} batch(es) skipped — those rows are un-annotated, not dropped.`);
-  if (pending.length > selected.length) {
-    console.log(`  ${pending.length - selected.length} pending entr(ies) not ranked this run (--limit ${selectBatch(pending, limit).length}). Re-run to continue.`);
+  if (toRank.length > selected.length) {
+    console.log(`  ${toRank.length - selected.length} pending entr(ies) not ranked this run (--limit ${selected.length}). Re-run to continue.`);
   }
   console.log(`  Elapsed: ${elapsed}s`);
-  console.log(`  Cost: not reported by \`${cli.bin}\` in headless mode — check your CLI's own usage view.`);
+  if (cli) console.log(`  Cost: not reported by \`${cli.bin}\` in headless mode — check your CLI's own usage view.`);
+  else console.log('  Cost: no scoring call was needed.');
   return 0;
 }
 

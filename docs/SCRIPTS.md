@@ -15,6 +15,7 @@ All scripts live in the project root as `.mjs` modules. Most are exposed via
 | `npm run merge` | `merge-tracker.mjs` | Merge batch TSVs into applications.md |
 | `npm run pdf` | `generate-pdf.mjs` | Convert HTML to ATS-optimized PDF |
 | `npm run jd:similarity` | `jd-similarity.mjs` | Compare a new JD with a previous JD/CV and recommend reuse, edits, or regeneration |
+| `npm run seen -- <list|show|record-gates|record-gaps|expire|gaps|prune>` | `seen-jobs.mjs` | Persistent per-posting state in `data/seen-jobs.json`: ranks (reused by `rank-pipeline.mjs`), eligibility/language gate verdicts, skill gaps vs `cv.md`, expiry; `gaps` summarises what to learn across ranked live postings |
 | `npm run gates -- <jd-file>` | `check-gates.mjs` | Pre-scoring eligibility + language gates (citizenship/clearance/region-only/LATAM-remote, required languages vs `language.spoken`); exit 1 on FAIL |
 | `npm run verify:host -- <url>` | `verify-host.mjs` | Classify a posting URL host as official ATS, known job board / configured portal, or unverified (look-alike, userinfo, punycode, raw-IP aware); exit 1 if unverified |
 | `npm run robots -- <url>` | `check-robots.mjs` | May a blocked fetch be retried with browser headers? Applies robots.txt (RFC 9309, longest match, Disallow wins ties; fails closed); exit 1 = do not retry. `CAREER_OPS_IGNORE_ROBOTS=1` overrides |

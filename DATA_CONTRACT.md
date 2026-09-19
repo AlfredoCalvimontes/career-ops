@@ -32,6 +32,7 @@ These files contain your personal data, customizations, and work product. Update
 | `data/applications.md` | Your application tracker (source of truth) |
 | `data/applications.db` | Derived query index over `applications.md` (SQLite, rebuilt by `node tracker.mjs sync` — safe to delete) |
 | `data/pipeline.md` | Your URL inbox |
+| `data/seen-jobs.json` | Per-posting state keyed by canonical URL: rank (score + reason), eligibility/language gate verdicts, skill gaps vs `cv.md`, expiry. Written by `rank-pipeline.mjs` and `seen-jobs.mjs`; lets an unchanged posting reuse its rank instead of being re-scored. Only adds knowledge: never deletes a pipeline row or changes a tracker status. A corrupt file is kept aside as `seen-jobs.json.corrupt-<ts>` and rebuilt. Safe to delete |
 | `data/scan-history.tsv` | Your scan history (tab-separated, append-only trailing columns; col 8: local SimHash JD fingerprint for cross-listing detection, col 9: posting date, cols 10-11: trust score/flags, col 12: normalized company key for repost/name matching). Older rows may have fewer columns — readers index by position and tolerate the absence. |
 | `data/scan-runs.tsv` | Your per-run scan counters (appended by `scan.mjs`, read by `stats.mjs`) |
 | `data/portal-health.tsv` | Consecutive reachability status for scanned portals (appended by `scan.mjs`; statuses: `reachable`, `empty`, `slug_gone`, `network`, `auth`, `server`, `unknown` — the last three joined the vocabulary later, so older files carry only the first four) |

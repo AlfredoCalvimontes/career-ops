@@ -30,6 +30,7 @@
     "fetch:page": "node fetch-page.mjs",
     "cv:verify-layout": "node verify-cv-layout.mjs",
     "check:answer": "node check-answer.mjs",
+    "seen": "node seen-jobs.mjs",
     "cv:verify-facts": "node verify-cv-facts.mjs",
     "cv:verify-ats": "node verify-ats.mjs",
     "test:cv-visual": "playwright test --config=playwright.cv.config.mjs",

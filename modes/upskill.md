@@ -16,6 +16,7 @@ Pattern credit: [MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/a
 - `reports/` — Evaluation reports (Machine Summary + Gap tables)
 - `cv.md` + `config/profile.yml` — Known skills (a skill present here must NEVER appear as a gap)
 - `data/upskill/report-*.md` — Previous upskill reports (for the diff section)
+- `data/seen-jobs.json` (optional) — skill gaps recorded for ranked postings you never evaluated or applied to. `node seen-jobs.mjs gaps --json` (add `--min-rank 3.5` to keep only good fits) lists them with counts. Treat it as a *supplement* to the report-based gap map, not a replacement: these gaps come from a keyword pass over the JD, without an evaluation report behind them, and a skill already in `cv.md`/`config/profile.yml` must still never appear as a gap.
 
 ## Step 1 — Run the Aggregator
 
