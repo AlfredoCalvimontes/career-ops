@@ -216,6 +216,8 @@ Notes:
 - [Personalization suggestions the candidate should review]
 ```
 
+**Standing rule — persist confirmed facts.** If the candidate confirms, corrects or supplies a fact while answering (a metric, a project detail, a skill, a scope correction, notice period, availability), follow "Persist confirmed facts (same turn)" in `modes/_shared.md`: offer to write it to `cv.md` / `article-digest.md` / `config/profile.yml` before the turn ends, after confirmation. Otherwise the next session treats it as unsupported and strips it.
+
 ## Step 8 — Persist application snapshot
 
 After the final answers are filled into the form or handed to the candidate for copy-paste, update the matched report with an additive `## Application Answers` section. If the candidate later confirms submission, update that same section from `filled` to `submitted`.

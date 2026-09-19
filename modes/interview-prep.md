@@ -2,6 +2,8 @@
 
 When the user asks to prep for an interview at a specific company+role, or when an evaluation scores 4.0+ and the user updates status to `Interview`, run this mode.
 
+> **Standing rule — persist confirmed facts.** When the candidate confirms or supplies a fact during prep (a metric, a scope correction, a project detail), follow "Persist confirmed facts (same turn)" in `modes/_shared.md`: offer to write it to the right in-scope file, after confirmation, in the same turn. A fact left only in chat is stripped by the next session's grounding audit.
+
 ## Inputs
 
 1. **Company name** and **role title** (required)
