@@ -16,6 +16,7 @@
     "verify": "node verify-pipeline.mjs",
     "lint": "node scripts/check-syntax.mjs",
     "guards": "node scripts/security-guards.mjs",
+    "lint:modes": "node scripts/lint-modes.mjs",
     "normalize": "node normalize-statuses.mjs",
     "dedup": "node dedup-tracker.mjs",
     "merge": "node merge-tracker.mjs",

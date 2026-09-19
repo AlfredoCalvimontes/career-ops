@@ -15,6 +15,7 @@ All scripts live in the project root as `.mjs` modules. Most are exposed via
 | `npm run merge` | `merge-tracker.mjs` | Merge batch TSVs into applications.md |
 | `npm run pdf` | `generate-pdf.mjs` | Convert HTML to ATS-optimized PDF |
 | `npm run jd:similarity` | `jd-similarity.mjs` | Compare a new JD with a previous JD/CV and recommend reuse, edits, or regeneration |
+| `npm run lint:modes [-- --strict --parity --json --rule <name>]` | `scripts/lint-modes.mjs` | Lint the mode and skill files agents obey: dead script / npm / mode-file / link references, config keys missing from the example profile, SKILL.md frontmatter. `--parity` lists which English modes each translation folder lacks (info only). Errors gate; a `scripts/lint-modes-baseline.json` can accept old ones |
 | `npm run seen -- <list|show|record-gates|record-gaps|expire|gaps|prune>` | `seen-jobs.mjs` | Persistent per-posting state in `data/seen-jobs.json`: ranks (reused by `rank-pipeline.mjs`), eligibility/language gate verdicts, skill gaps vs `cv.md`, expiry; `gaps` summarises what to learn across ranked live postings |
 | `npm run gates -- <jd-file>` | `check-gates.mjs` | Pre-scoring eligibility + language gates (citizenship/clearance/region-only/LATAM-remote, required languages vs `language.spoken`); exit 1 on FAIL |
 | `npm run verify:host -- <url>` | `verify-host.mjs` | Classify a posting URL host as official ATS, known job board / configured portal, or unverified (look-alike, userinfo, punycode, raw-IP aware); exit 1 if unverified |
