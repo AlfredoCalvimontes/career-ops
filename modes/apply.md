@@ -191,6 +191,7 @@ For each question, generate the response following:
 5. **career-ops proof point**: Include in "Additional info" if there is a field for it
 6. **Recruiter-side risk map**: Use `modes/heuristics/recruiter-side.md` to identify what doubt the question is trying to resolve (motivation, stack fit, logistics, comp, work-auth, availability, seniority) and answer that doubt directly.
 7. **Disclosure discipline**: Answer logistics questions truthfully when asked, but do not volunteer sensitive or HR-only details in unrelated motivation/fit answers.
+8. **Field-type guidance and limits**: For self-introductions, project entries, hard character/word limits, motivation, competency questions, logistics, and equipment/photo requests, follow `modes/_form-fields.md`. When a limit is visible, measure the answer with `node check-answer.mjs` instead of estimating, and state the count.
 
 **Output format:**
 

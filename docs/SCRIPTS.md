@@ -21,6 +21,7 @@ All scripts live in the project root as `.mjs` modules. Most are exposed via
 | `npm run fetch:page -- <url>` | `fetch-page.mjs` | Fetch a page as text; on HTTP 403 retry with browser headers only when `check-robots` allows it |
 | `npm run cv:verify-layout -- <file.pdf>` | `verify-cv-layout.mjs` | Measure a generated PDF: orphaned heading, mid-page hole, page ending early, thin last page, text against the page edge (needs Poppler; `generate-pdf.mjs` runs it as an advisory). Exit 1 = problem, 2 = skipped |
 | `npm run guards` | `scripts/security-guards.mjs` | Fail loudly when a supply-chain or personal-data surface widens: tracked agent permissions/hooks, skill and agent tool grants, package.json lifecycle scripts and non-registry dependencies, new `.gitignore` negations, user files no longer git-ignored, `pull_request_target` workflows that check out the PR head. Widening needs an allowlist edit in the same diff |
+| `npm run check:answer -- --chars N [--words N]` | `check-answer.mjs` | Count an application answer (stdin or `--file`) against a portal's hard limit: chars (code points + CRLF variant), words, overrun, sentences to cut first, trimmed variant; exit 1 if over |
 | `npm run img-to-pdf` | `img-to-pdf.mjs` | Convert a single screenshot/image into a single-page PDF |
 | `node build-cv-latex.mjs` | `build-cv-latex.mjs` | Build .tex from structured JSON payload |
 | `npm run sync-check` | `cv-sync-check.mjs` | Validate CV/profile consistency |
