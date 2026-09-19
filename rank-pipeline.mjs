@@ -38,7 +38,9 @@ import { sanitizeMarkdownField } from './scan.mjs';
 import { withPipelineLock } from './pipeline-lock.mjs';
 import { isMainModule } from './lib/is-main-module.mjs';
 import { getCareerOpsRoot } from './path-resolver.mjs';
-import { getRank, keyFor, loadSeenJobs, setRank, touch, withSeenJobs } from './lib/seen-jobs.mjs';
+import { getRank, keyFor, loadSeenJobs, setRank, setTier, touch, withSeenJobs } from './lib/seen-jobs.mjs';
+import { classifyTier } from './lib/role-tiers.mjs';
+import { loadRoleTierConfig } from './role-tier.mjs';
 
 const CAREER_OPS = dirname(fileURLToPath(import.meta.url));
 const DATA_ROOT = getCareerOpsRoot();
@@ -347,7 +349,13 @@ async function main(args) {
   try {
     await withSeenJobs(SEEN_PATH, (state) => {
       const now = new Date().toISOString();
-      for (const e of pending) touch(state, { url: e.url, company: e.company, title: e.title }, now);
+      const { tiers } = loadRoleTierConfig();
+      for (const e of pending) {
+        const key = touch(state, { url: e.url, company: e.company, title: e.title }, now);
+        // Tag the role tier (config/profile.yml → role_tiers) so shortlists can sort by it.
+        const t = key ? classifyTier(e.title, tiers) : { tier: null };
+        if (t.tier) setTier(state, key, t.tier, t.matched);
+      }
       for (const r of ranked) setRank(state, keyFor(r.entry.url), { score: r.score, reason: r.reason, cli: cli?.bin }, now);
     });
   } catch (err) {

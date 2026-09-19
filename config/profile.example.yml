@@ -44,6 +44,23 @@ target_roles:
       level: "Mid-Senior"
       fit: "adjacent"
 
+# Optional role tiers: rank roles by how much you WANT them, not only how well
+# they fit (`node role-tier.mjs classify "<title>"`, `board`, `shortlist`).
+#   tier_1        the career you are aiming for (preferred)
+#   tier_2        adjacent roles, less preferred (score capped at 4.0)
+#   tier_3_bridge stopgap roles (score capped at 3.5), only worth taking when they
+#                 pay MORE than your current job (bridge_min_monthly_usd)
+# An entry may list alternatives with "/" ("QA / Test Automation Engineer") and
+# parentheticals and seniority words are ignored when matching titles.
+# role_tiers:
+#   tier_1:
+#     - "Senior Backend Engineer (Python / Node.js)"
+#   tier_2:
+#     - "Solutions Architect"
+#   tier_3_bridge:
+#     - "Customer Support Specialist"
+#   bridge_min_monthly_usd: 1200   # your current monthly pay (USD); null = unknown
+
 narrative:
   # Your professional headline (1 line)
   headline: "ML Engineer turned AI product builder"

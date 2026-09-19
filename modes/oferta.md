@@ -71,6 +71,19 @@ Table with:
 - **Culture screen** (see `_shared.md` § Scoring System): pass / caution / fail, with the specific evidence found or missing — not just a score, name what you saw
 - TL;DR in 1 sentence
 
+### Role tier (optional)
+
+If `config/profile.yml` defines `role_tiers`, classify the role before scoring and carry the tier into the report:
+
+```bash
+node role-tier.mjs classify "<role title>" --score <fit score> [--pay <monthly USD>]
+```
+
+- **T1** is the career target. **T2** (adjacent, less preferred) caps the score at 4.0. **T3** (bridge) caps it at 3.5 and is only worth taking when the pay is **above** `role_tiers.bridge_min_monthly_usd`; at or below it the verdict is FAIL, and with the pay unstated or the threshold unset it is at best MARGINAL. Below `compensation.minimum` any tier FAILs.
+- State the tier and the capped score in the report header. Never present a T3 role as career direction in a CV or cover letter.
+- Titles the lists do not match are reported as unclassified, not guessed. Suggest adding the title to the right tier.
+- Shortlists sort by tier first (`node role-tier.mjs shortlist`, `node role-tier.mjs board`), so a T3 role never displaces a T1/T2 role.
+
 ### Source-host verification
 
 When the input is a URL, classify its host before drafting anything:

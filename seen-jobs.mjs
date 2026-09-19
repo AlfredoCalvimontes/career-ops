@@ -2,7 +2,8 @@
 /**
  * seen-jobs.mjs — persistent per-posting state: rank, gate verdicts, skill gaps, expiry.
  *
- *   node seen-jobs.mjs list [--min-rank N] [--gate PASS|FLAG|FAIL] [--active|--expired] [--json]
+ *   node seen-jobs.mjs list [--min-rank N] [--gate PASS|FLAG|FAIL] [--tier 1|2|3] [--sort tier]
+ *                           [--active|--expired] [--json]
  *   node seen-jobs.mjs show <url>
  *   node seen-jobs.mjs record-gates <url> --jd <file|-> [--company C] [--title T]
  *   node seen-jobs.mjs record-gaps  <url> --jd <file|-> [--company C] [--title T]
@@ -39,16 +40,17 @@ function readJd(target) {
 
 function fmt(j) {
   const rank = j.rank ? `${j.rank.score.toFixed(1)}/5` : '  —  ';
+  const tier = j.tier ? `T${j.tier.tier}` : '  ';
   const g = j.gates ? `${j.gates.eligibility.verdict}/${j.gates.language.verdict}` : '—';
   const flags = [j.expired ? 'expired' : '', j.gaps?.length ? `${j.gaps.length} gap(s)` : '', ...(j.gates?.eligibility.tags ?? [])].filter(Boolean).join(', ');
-  return `${rank}  gates ${g.padEnd(9)} ${j.company || '?'} | ${j.title || '?'}${flags ? `  [${flags}]` : ''}\n        ${j.url}`;
+  return `${tier} ${rank}  gates ${g.padEnd(9)} ${j.company || '?'} | ${j.title || '?'}${flags ? `  [${flags}]` : ''}\n        ${j.url}`;
 }
 
 async function main(argv) {
   const [cmd, ...rest] = argv;
   const json = hasFlag(rest, '--json');
   const path = process.env.CAREER_OPS_SEEN_JOBS || SEEN_PATH;
-  const urlArg = rest.find((a) => !a.startsWith('--') && !/^\d+$/.test(a) && a !== flagValue(rest, '--jd') && a !== flagValue(rest, '--company') && a !== flagValue(rest, '--title') && a !== flagValue(rest, '--reason') && a !== flagValue(rest, '--gate'));
+  const urlArg = rest.find((a) => !a.startsWith('--') && !/^\d+$/.test(a) && a !== flagValue(rest, '--jd') && a !== flagValue(rest, '--company') && a !== flagValue(rest, '--title') && a !== flagValue(rest, '--reason') && a !== flagValue(rest, '--gate') && a !== flagValue(rest, '--tier') && a !== flagValue(rest, '--sort') && a !== flagValue(rest, '--min-rank'));
 
   const note = (recovered) => { if (recovered) console.error(`seen-jobs: state file ${recovered}; starting from an empty state`); };
 
@@ -60,6 +62,8 @@ async function main(argv) {
       const jobs = listJobs(state, {
         minRank: minRank != null ? Number(minRank) : undefined,
         gate: flagValue(rest, '--gate') ?? undefined,
+        tier: flagValue(rest, '--tier') != null ? Number(flagValue(rest, '--tier')) : undefined,
+        sort: flagValue(rest, '--sort') ?? undefined,
         expired: hasFlag(rest, '--expired') ? true : hasFlag(rest, '--active') ? false : undefined,
       });
       if (json) console.log(JSON.stringify(jobs, null, 2));
