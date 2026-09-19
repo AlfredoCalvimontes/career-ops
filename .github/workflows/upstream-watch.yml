@@ -1,0 +1,100 @@
+name: Upstream watch
+
+# Weekly: compare this fork's working branch with the upstream project and keep
+# ONE open issue ("Upstream watch") listing what is new, grouped by type, with the
+# commits that touch files this fork changed flagged as likely conflicts.
+#
+# It only reports. Nothing is merged, rebased or pushed. Scheduled workflows run
+# only where Actions is enabled: on a fork, enable it once in the Actions tab.
+#
+# Commit subjects are third-party text. They are written to a file by
+# scripts/upstream-triage.mjs (which neutralizes mentions, HTML and pipes) and
+# passed to `gh` with --body-file; nothing from upstream is interpolated into a
+# shell command or an expression.
+
+on:
+  schedule:
+    - cron: '17 6 * * 1'   # Mondays 06:17 UTC
+  workflow_dispatch:
+    inputs:
+      base:
+        description: 'Branch to compare against upstream/main'
+        required: false
+        default: 'upgrades'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: upstream-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    # Never run on the upstream project itself.
+    if: github.repository != 'career-ops-hq/career-ops'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      UPSTREAM_URL: https://github.com/career-ops-hq/career-ops.git
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Fetch upstream
+        run: |
+          git remote add upstream "$UPSTREAM_URL"
+          git fetch --no-tags --quiet upstream main
+
+      - name: Pick the base branch
+        id: base
+        env:
+          INPUT_BASE: ${{ inputs.base }}
+        run: |
+          base="${INPUT_BASE:-upgrades}"
+          # Only ever a plain branch name of this repository.
+          case "$base" in
+            *[!A-Za-z0-9._/-]*|-*|"") echo "unsafe base: using main"; base=main ;;
+          esac
+          if git rev-parse --verify --quiet "origin/$base" >/dev/null; then
+            echo "ref=origin/$base" >> "$GITHUB_OUTPUT"
+          else
+            echo "branch '$base' not found; using origin/main"
+            echo "ref=origin/main" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build the report
+        env:
+          BASE_REF: ${{ steps.base.outputs.ref }}
+        run: |
+          node scripts/upstream-triage.mjs --base "$BASE_REF" --upstream upstream/main --out "$RUNNER_TEMP/report.md"
+          node scripts/upstream-triage.mjs --base "$BASE_REF" --upstream upstream/main --json > "$RUNNER_TEMP/report.json"
+          echo "TOTAL=$(node -e "console.log(JSON.parse(require('fs').readFileSync(process.env.RUNNER_TEMP + '/report.json','utf8')).total)")" >> "$GITHUB_ENV"
+          echo "OVERLAP=$(node -e "console.log(JSON.parse(require('fs').readFileSync(process.env.RUNNER_TEMP + '/report.json','utf8')).overlapping)")" >> "$GITHUB_ENV"
+
+      - name: Update the tracking issue
+        run: |
+          gh label create upstream-watch --color 0e8a16 --description "New commits upstream" --force >/dev/null
+          existing=$(gh issue list --label upstream-watch --state open --json number --jq '.[0].number // empty')
+          if [ "$TOTAL" = "0" ]; then
+            if [ -n "$existing" ]; then
+              gh issue close "$existing" --comment "Up to date with upstream/main."
+            fi
+            echo "Up to date; nothing to report."
+            exit 0
+          fi
+          title="Upstream watch: $TOTAL new commit(s)"
+          if [ "$OVERLAP" != "0" ]; then title="$title, $OVERLAP may conflict"; fi
+          if [ -n "$existing" ]; then
+            gh issue edit "$existing" --title "$title" --body-file "$RUNNER_TEMP/report.md"
+          else
+            gh issue create --title "$title" --label upstream-watch --body-file "$RUNNER_TEMP/report.md"
+          fi
