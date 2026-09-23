@@ -128,6 +128,7 @@ AI-powered, CLI-agnostic job search automation: pipeline tracking, offer evaluat
 | `paste-reply.mjs` | Manual/no-Gmail input into reply-watch classification — normalizes a pasted/file email (subject/from/body) and appends to `data/reply-candidates.json`; never overwrites entries, never classifies, never touches the tracker |
 | `analyze-patterns.mjs` | Pattern analysis incl. per-ATS-vendor advance rate (JSON) |
 | `upskill.mjs` | Weighted skill-gap map from tracked reports; known skills from `cv.md`/`config/profile.yml` excluded (JSON) |
+| `handoff.mjs` | Prompt exporter for a cheaper AI: `node handoff.mjs <strategy\|market\|practice\|outreach> [--input <file>] [--with-cv]` builds one self-contained prompt (task rules + FACTS from `modes/_brief.md`/`cv.md` with contact details redacted + fenced untrusted DATA); never includes `story-bank.md`; read-only, no LLM, no network (see `modes/handoff.md`) |
 | `stats.mjs` | Lifetime pipeline stats: tracker roll-up, canonical `ever*` funnel, scan totals, portal coverage, follow-up compliance, scan-run trends (JSON or `--summary`) |
 | `data/status-log.tsv` | Append-only status transition ledger, sibling of the tracker file: `{tracker#}\t{date}\t{from}\t{to}\t{source}\t{note}`. Appended by `set-status.mjs` on every real status change; the tracker stays the source of truth for *state*, the ledger records *when*. An unknown from/to state is the sentinel `-`, and the source column is a closed set whose members are `VALID_SOURCES` in `funnel-velocity.mjs` — see `DATA_CONTRACT.md` before writing to it from anywhere else |
 | `funnel-velocity.mjs` | Funnel calibration vs market benchmarks + stage velocity, folded from `data/status-log.tsv` (JSON or `--summary`) |
@@ -344,6 +345,7 @@ Two separate axes:
 | Wants to know whether the evaluation scores are predicting their real outcomes (interviews/offers) | `calibrate` — advisory report over `/outcome` data; never changes scoring |
 | Receives an offer/contract and wants help understanding it before signing | `offer-prep` — clause walk with neutral tags + lawyer question list; describes, never judges; no verdicts, no online research; optional draft-only negotiation reply from the "Items to raise" list |
 | Wants to broaden the search with adjacent job titles suggested from the CV | `titles` |
+| Wants to hand a task (role strategy, market decode, mock interview, outreach) to a cheaper AI or local model | `handoff` — `handoff.mjs` exports a self-contained prompt from `_brief.md`/`cv.md` with contact details redacted; no LLM call |
 | Asks what skills to learn, wants a skill-gap analysis of their pipeline | `upskill` |
 | Wants to build or enrich the profile from documents they already have (master CV, LinkedIn export, diplomas, references) | `intake` — scans `documents/`, extracts text locally (`intake.mjs`), proposes source-annotated additions to `config/profile.yml`/`cv.md`/`modes/_profile.md`; writes nothing without explicit confirm |
 | Asks about follow-ups or application cadence | `followup` |

@@ -39,6 +39,7 @@ table in `AGENTS.md` (mirrored in `CLAUDE.md`).
 | `patterns.md` | `patterns` | Rejection pattern detector |
 | `calibrate.md` | `calibrate` | Advisory report: do your evaluation scores predict your real outcomes? Reads `/outcome` data; never changes scoring |
 | `titles.md` | `titles` | Adjacent job-title suggestions |
+| `handoff.md` | `handoff` | Export a self-contained prompt for a cheaper AI (strategy, market decode, practice interview, outreach) |
 | `training.md` | `training` | Training & course evaluation |
 | `project.md` | `project` | Portfolio project evaluation |
 | `add.md` | `add` | Add a project, paper, or role to the CV (confirm-before-write) |

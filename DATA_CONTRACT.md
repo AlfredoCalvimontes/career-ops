@@ -111,6 +111,7 @@ These files contain system logic, scripts, templates, and instructions that impr
 | `modes/training.md` | Training evaluation instructions |
 | `modes/patterns.md` | Pattern analysis instructions |
 | `modes/titles.md` | Adjacent job-title suggestion instructions |
+| `modes/handoff.md` | Prompt-export instructions (`handoff.mjs`; templates in `templates/handoff/`) |
 | `modes/upskill.md` | Skill-gap analysis instructions |
 | `modes/followup.md` | Follow-up cadence instructions |
 | `modes/offer-prep.md` | Offer-stage contract reading companion instructions |
