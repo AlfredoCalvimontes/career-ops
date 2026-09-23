@@ -176,6 +176,7 @@ const SYSTEM_PATHS = [
   'modes/patterns.md',
   'modes/calibrate.md',
   'modes/titles.md',
+  'modes/strategy.md',
   'modes/upskill.md',
   'modes/intake.md',
   'documents/.gitkeep',

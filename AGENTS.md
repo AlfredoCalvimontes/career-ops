@@ -344,6 +344,7 @@ Two separate axes:
 | Wants to know whether the evaluation scores are predicting their real outcomes (interviews/offers) | `calibrate` — advisory report over `/outcome` data; never changes scoring |
 | Receives an offer/contract and wants help understanding it before signing | `offer-prep` — clause walk with neutral tags + lawyer question list; describes, never judges; no verdicts, no online research; optional draft-only negotiation reply from the "Items to raise" list |
 | Wants to broaden the search with adjacent job titles suggested from the CV | `titles` |
+| Asks which roles to target and why, or which role families to spend time on | `strategy` — tier-ranked role families with verbatim CV evidence; read-only |
 | Asks what skills to learn, wants a skill-gap analysis of their pipeline | `upskill` |
 | Wants to build or enrich the profile from documents they already have (master CV, LinkedIn export, diplomas, references) | `intake` — scans `documents/`, extracts text locally (`intake.mjs`), proposes source-annotated additions to `config/profile.yml`/`cv.md`/`modes/_profile.md`; writes nothing without explicit confirm |
 | Asks about follow-ups or application cadence | `followup` |
