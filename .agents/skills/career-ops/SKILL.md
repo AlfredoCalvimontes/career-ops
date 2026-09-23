@@ -8,7 +8,7 @@ description: >-
 arguments: mode
 user_invocable: true
 user-invocable: true
-argument-hint: "[scan | discover | deep | pdf | text | latex | latex-tex | cover | email | add | expand | eu-swe | oferta | ofertas | apply | batch | tracker | agent-inbox | pipeline | contacto | training | project | interview-prep | interview | interview/plan | interview/practice | interview/debrief | interview-redflag | patterns | offer-prep | titles | strategy | handoff | upskill | followup | reply-watch | outcome | update]"
+argument-hint: "[scan | discover | deep | pdf | text | latex | latex-tex | cover | email | add | expand | eu-swe | oferta | ofertas | apply | batch | tracker | agent-inbox | pipeline | contacto | training | project | interview-prep | interview | interview/plan | interview/practice | interview/debrief | interview-redflag | patterns | offer-prep | titles | linkedin | strategy | handoff | upskill | followup | reply-watch | outcome | update]"
 license: MIT
 ---
 
@@ -77,6 +77,7 @@ Determine the mode from `$mode`:
 | `patterns` | `patterns` |
 | `offer-prep` | `offer-prep` |
 | `titles` | `titles` |
+| `linkedin` | `linkedin` |
 | `strategy` | `strategy` |
 | `handoff` | `handoff` |
 | `upskill` | `upskill` |
@@ -161,6 +162,7 @@ Available commands:
   /career-ops patterns  → Analyze rejection patterns and improve targeting
   /career-ops offer-prep → Read a received offer/contract with the candidate: clause walk + lawyer questions (not legal advice)
   /career-ops titles    → Suggest adjacent job titles from your CV to broaden the search
+  /career-ops linkedin  → Audit and rewrite your LinkedIn profile: headline, About, experience, keywords, recruiter test (draft-only)
   /career-ops strategy  → Which role families to target and why, ranked by your tiers (read-only)
   /career-ops handoff   → Export a self-contained prompt (strategy / market / practice / outreach) for a cheaper AI
   /career-ops upskill   → Aggregate skill-gap analysis from your evaluated reports
@@ -190,7 +192,7 @@ Applies to: `auto-pipeline`, `oferta`, `ofertas`, `pdf`, `text`, `contacto`, `ap
 
 Read `modes/_profile.md` (if exists) + `modes/_custom.md` (if exists) + `modes/{mode}.md`
 
-Applies to: `tracker`, `agent-inbox`, `deep`, `interview-prep`, `interview`, `regional/eu-swe`, `interview/plan`, `interview/practice`, `interview/debrief`, `latex`, `latex-tex`, `training`, `project`, `patterns`, `titles`, `strategy`, `handoff`, `upskill`, `followup`, `reply-watch`, `outcome`, `cover`, `email`, `add`, `offer-prep`, `discover`
+Applies to: `tracker`, `agent-inbox`, `deep`, `interview-prep`, `interview`, `regional/eu-swe`, `interview/plan`, `interview/practice`, `interview/debrief`, `latex`, `latex-tex`, `training`, `project`, `patterns`, `titles`, `linkedin`, `strategy`, `handoff`, `upskill`, `followup`, `reply-watch`, `outcome`, `cover`, `email`, `add`, `offer-prep`, `discover`
 
 ### Modes delegated to subagent
 

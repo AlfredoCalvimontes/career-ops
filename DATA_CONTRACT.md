@@ -111,6 +111,7 @@ These files contain system logic, scripts, templates, and instructions that impr
 | `modes/training.md` | Training evaluation instructions |
 | `modes/patterns.md` | Pattern analysis instructions |
 | `modes/titles.md` | Adjacent job-title suggestion instructions |
+| `modes/linkedin.md` | LinkedIn profile audit/rewrite instructions |
 | `modes/strategy.md` | Role-strategy instructions (which role families to target and why) |
 | `modes/handoff.md` | Prompt-export instructions (`handoff.mjs`; templates in `templates/handoff/`) |
 | `modes/upskill.md` | Skill-gap analysis instructions |

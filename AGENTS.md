@@ -143,6 +143,7 @@ AI-powered, CLI-agnostic job search automation: pipeline tracking, offer evaluat
 | `salary-gap.mjs` | Desired/advertised/actual comp gap analyzer — folds report `advertised_comp` + `data/salary-observations.tsv` (JSON or `--summary`) |
 | `negotiation-roi.mjs` | Salary-negotiation talking-point generator — anchors an ask in a quantified `interview-prep/story-bank.md` achievement, kept only if the same number also appears verbatim in `cv.md` (v1 safety gate), converted to an estimated annualized dollar value from an explicit wage/frequency input (never guessed); read-only, draft-only (JSON or `--summary`) |
 | `assessment-log.mjs` | Skills-assessment logger — `add` appends platform/subject/threshold/score + staleness note to `data/assessments.tsv` (JSON or `--summary`) |
+| `linkedin-keywords.mjs` | Zero-LLM keyword table for the `linkedin` mode: JD skills (from `reports/` archived JDs, `jds/`, or files) vs a pasted LinkedIn profile vs `cv.md` proof; a keyword `cv.md` cannot back is never suggested (JSON or `--summary`) |
 | `jd-skill-gap.mjs` | Zero-LLM JD skill classifier vs `cv.md`: existing / supportedByResume / gap; never auto-adds claims to `cv.md` (JSON or `--summary`) |
 | `contacts.mjs` | Job-search phonebook → vCard 3.0 exporter — stable UIDs so re-imports update instead of duplicating on platforms that honor vCard UID (JSON, `--summary`, `--vcf`, `--caller-id`) |
 | `linkedin-join.mjs` | Warm-intro finder — joins a LinkedIn `Connections.csv` export against tracker + `portals.yml` companies to answer "do I know anyone here?"; zero-token, offline, read-only. Operational only: never a scoring input, never a content source (JSON, `--summary`, `--company <name>`, `--tsv`) |
@@ -345,6 +346,7 @@ Two separate axes:
 | Wants to know whether the evaluation scores are predicting their real outcomes (interviews/offers) | `calibrate` — advisory report over `/outcome` data; never changes scoring |
 | Receives an offer/contract and wants help understanding it before signing | `offer-prep` — clause walk with neutral tags + lawyer question list; describes, never judges; no verdicts, no online research; optional draft-only negotiation reply from the "Items to raise" list |
 | Wants to broaden the search with adjacent job titles suggested from the CV | `titles` |
+| Wants to audit or rewrite their LinkedIn profile (headline, About, experience, keywords, 30-second recruiter test) | `linkedin` — six steps from `cv.md` evidence only; `linkedin-keywords.mjs` builds the keyword table; draft-only, never touches LinkedIn |
 | Asks which roles to target and why, or which role families to spend time on | `strategy` — tier-ranked role families with verbatim CV evidence; read-only |
 | Wants to hand a task (role strategy, market decode, mock interview, outreach) to a cheaper AI or local model | `handoff` — `handoff.mjs` exports a self-contained prompt from `_brief.md`/`cv.md` with contact details redacted; no LLM call |
 | Asks what skills to learn, wants a skill-gap analysis of their pipeline | `upskill` |
