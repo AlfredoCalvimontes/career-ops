@@ -39,6 +39,7 @@ table in `AGENTS.md` (mirrored in `CLAUDE.md`).
 | `patterns.md` | `patterns` | Rejection pattern detector |
 | `calibrate.md` | `calibrate` | Advisory report: do your evaluation scores predict your real outcomes? Reads `/outcome` data; never changes scoring |
 | `titles.md` | `titles` | Adjacent job-title suggestions |
+| `linkedin.md` | `linkedin` | LinkedIn profile audit and rewrite (headline, About, experience, keywords, recruiter test; draft-only) |
 | `strategy.md` | `strategy` | Which role families to target and why (tier-ranked, read-only) |
 | `handoff.md` | `handoff` | Export a self-contained prompt for a cheaper AI (strategy, market decode, practice interview, outreach) |
 | `training.md` | `training` | Training & course evaluation |
